@@ -1,5 +1,4 @@
 const router = require("express").Router();
-
 const { User, Post, Comment } = require("../../models");
 
 //get all users
@@ -75,17 +74,20 @@ router.post("/", (req, res) => {
 //Post/ login
 router.post("/login", (req, res) => {
   // expects {email: 'lernantino@gmail.com', password: 'password1234'}
+  console.log(req.body);
   User.findOne({
     where: {
       email: req.body.email,
     },
   }).then((dbUserData) => {
+    console.log(dbUserData);
     if (!dbUserData) {
       res.status(400).json({ message: "No user with that email address!" });
       return;
     }
 
     const validPassword = dbUserData.checkPassword(req.body.password);
+    console.log(validPassword);
 
     if (!validPassword) {
       res.status(400).json({ message: "Incorrect password!" });
