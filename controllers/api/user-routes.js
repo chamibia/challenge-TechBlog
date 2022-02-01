@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const { User, Post, Comment } = require("../../models");
+const bcrypt = require("bcrypt");
 
 //get all users
 router.get("/", (req, res) => {
@@ -51,36 +52,49 @@ router.get("/:id", (req, res) => {
 //POST/api/users
 router.post("/", (req, res) => {
   // expects {username: 'Lernantino', email: 'lernantino@gmail.com', password: 'password1234'}
-  User.create({
-    username: req.body.username,
-    email: req.body.email,
-    password: req.body.password,
-  })
-    .then((dbUserData) => {
-      req.session.save(() => {
-        req.session.user_id = dbUserData.id;
-        req.session.username = dbUserData.username;
-        req.session.loggedIn = true;
+  const { username, email, password } = req.body;
+  console.log(req.body);
+  if (username == null || email == null || password == null) {
+    res.status(400).json({ message: "Missing info" });
+  }
+  let hashPassword = null;
+  bcrypt.genSalt(10, (err, salt) => {
+    bcrypt.hash(password, salt, (err, hash) => {
+      console.log(hash);
+      hashPassword = hash;
 
-        res.json(dbUserData);
-      });
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(500).json(err);
+      console.log(hashPassword);
+      User.create({
+        username: req.body.username,
+        email: req.body.email,
+        password: hashPassword,
+      })
+        .then((dbUserData) => {
+          req.session.save(() => {
+            req.session.user_id = dbUserData.id;
+            req.session.username = dbUserData.username;
+            req.session.loggedIn = true;
+
+            res.json(dbUserData);
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+          res.status(500).json(err);
+        });
     });
+  });
 });
 
 //Post/ login
 router.post("/login", (req, res) => {
   // expects {email: 'lernantino@gmail.com', password: 'password1234'}
-  console.log(req.body);
+
   User.findOne({
     where: {
       email: req.body.email,
     },
   }).then((dbUserData) => {
-    console.log(dbUserData);
     if (!dbUserData) {
       res.status(400).json({ message: "No user with that email address!" });
       return;
@@ -90,7 +104,7 @@ router.post("/login", (req, res) => {
     console.log(validPassword);
 
     if (!validPassword) {
-      res.status(400).json({ message: "Incorrect password!" });
+      res.status(401).json({ message: "Incorrect password!" });
       return;
     }
 
