@@ -6,7 +6,8 @@
   <form>
     <div>
       <input type="post-title" type="text" value="{{post.title}}" />
-      <span>({{format_url post.post_content}})</span>
+      {{!-- <span>({{format_url post.post_content}})</span> --}}
+      <span>({{post.post_content}})</span>
     </div>
     <div>
       {{post.vote_count}}
