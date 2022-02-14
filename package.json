@@ -4,6 +4,7 @@
   "description": "tech-blog",
   "main": "server.js",
   "scripts": {
+    "seed": "node seeds/index.js",
     "test": "npm start",
     "start": "node server.js"
   },
