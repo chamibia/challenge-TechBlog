@@ -1,32 +1,35 @@
-<section>
-    <h2>Create new post</h2>
-    <form class="new-post-form">
-        <div>
-            <label for="post-title"> Title </label>
-            <input type="text" id="post-title" name="post-title">
-        </div>
-        <div>
-            <label for="post-url">Link</label>
-            <input id="post-url" name="post-url" />
-        </div>
-        <button type="submit" class="btn">Create</button>
-    </form>
-</section>
+<!DOCTYPE html>
+<html lang="en">
 
-{{#if posts.length}}
-<section>
-    <h2>Your posts</h2>
-    <ol>
-        {{#each posts as |post|}}
-        <li>
-            {{> post-info post}}
-            <a href="/dashboard/edit/{{post.id}}"
-            class="edit-link">Edit post</a>
-        </li>
-        {{/each}}
-    </ol>
-</section>
-{{else}}
-<div>No posts</div>
-{{/if}}
-<script src="/javascript/add-post.js"></script>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Tech Blog</title>
+  <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans:400,400i,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body class="flex-column min-100-vh">
+  <nav class="navbar">
+    <ul class="flex-row">
+      <li class="li-inline nav-item"><a href="/">Home</a></li>
+      <li class="li-inline nav-item"><a href="/dashboard">Dashboard</a></li>
+      <li class="li-inline nav-item"><a href="#" id="logout-link">Logout</a></li>
+    </ul>
+  </nav>
+  <header class="hero">
+    <h1 class="app-title"><a href="/dashboard">Your Dashboard</a></h1>
+  </header>
+
+  <main class="col-auto">
+    {{{body}}}
+  </main>
+
+  <footer class="footer flex-row justify-center">
+    <a href="/dashboard/new">➕ New Post</a>
+  </footer>
+</body>
+
+<script src="/js/logout.js"></script>
+
+</html>

@@ -6,14 +6,12 @@ router.get("/", (req, res) => {
   console.log("=============");
 
   Post.findAll({
-    include: [
-      User
-    ],
+    include: [User],
   })
     .then((dbPostData) => {
       const posts = dbPostData.map((post) => post.get({ plain: true }));
 
-      res.render("", {
+      res.render("all-post", {
         posts,
         // loggedIn: req.session.loggedIn,
       });
@@ -26,23 +24,12 @@ router.get("/", (req, res) => {
 
 //get single post
 router.get("/post/:id", (req, res) => {
-  Post.findOne({
-    where: {
-      id: req.params.id,
-    },
-    attributes: ["id", "post_content", "title", "created_at"],
+  Post.findByPk(req.params.id, {
     include: [
+      User,
       {
         model: Comment,
-        attributes: ["id", "comment_text", "post_id", "user_id", "created_at"],
-        include: {
-          model: User,
-          attributes: ["username"],
-        },
-      },
-      {
-        model: User,
-        attributes: ["username"],
+        include: [User],
       },
     ],
   })
@@ -56,7 +43,6 @@ router.get("/post/:id", (req, res) => {
       });
       res.render("single-post", {
         post,
-        loggedIn: req.session.loggedIn,
       });
     })
     .catch((err) => {
